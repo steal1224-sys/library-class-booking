@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>모란글샘 활용 신청 · 부개여고</title>
+<title>모란글샘 이용 신청 · 부개여고</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper: #F3EEE0;
@@ -59,9 +59,10 @@
   h1{
     font-family:'Gowun Batang', serif;
     font-weight:700;
-    font-size:clamp(20px,3.2vw,28px);
+    font-size:clamp(17px,2.6vw,22px);
     margin:0;
     letter-spacing:-0.01em;
+    color:#D97757;
   }
   .header-actions{display:flex;gap:8px;align-items:center;}
 
@@ -105,13 +106,17 @@
 
   /* ---------- Month nav ---------- */
   .month-nav{
+    position:relative;
     display:flex;align-items:center;justify-content:center;gap:18px;
     margin-bottom:18px;
   }
   .month-nav button{
-    width:36px;height:36px;border-radius:50%;
-    background:var(--paper-white);border:1.5px solid var(--line);
-    color:var(--ink);font-size:14px;display:flex;align-items:center;justify-content:center;
+    width:auto;height:auto;border-radius:0;
+    background:none;border:none;
+    color:var(--ink);font-size:22px;font-weight:700;
+    padding:0 4px;
+    box-shadow:none;outline:none;
+    appearance:none;-webkit-appearance:none;
   }
   .month-nav button:hover{border-color:var(--lamp);color:var(--lamp);}
   .month-label{
@@ -119,20 +124,32 @@
     min-width:150px;text-align:center;
   }
   .today-link{
-    font-family:'JetBrains Mono',monospace;font-size:8px;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    font-family:'Gowun Dodum', sans-serif;font-weight:700;font-size:7px;
     letter-spacing:.02em;
-    color:var(--danger);
-    background:transparent;
-    border:1px solid var(--danger);
-    border-radius:20px;
-    padding:1px 6px;
+    color:#D6362A;
+    background:none;
+    border:none;
+    border-radius:0;
+    box-shadow:none;
+    outline:none;
+    appearance:none;
+    -webkit-appearance:none;
+    padding:0;
     font-weight:700;
     cursor:pointer;
-    transition:all .15s ease;
-    line-height:1.4;
   }
   .today-link:hover{
-    background:var(--danger-glow);
+    color:#8a3620;
+  }
+  .today-link:active{
+    transform:translateY(-50%) translateY(1px);
+  }
+  .today-link:focus{
+    outline:none;
   }
 
   /* ---------- Pending summary strip ---------- */
@@ -200,6 +217,27 @@
   }
   .day-cell.sun .day-num{color:var(--danger);}
   .day-cell.sat .day-num{color:var(--lamp);}
+  .day-cell.weekend-closed{
+    background:var(--paper-shade);
+    cursor:not-allowed;
+    opacity:0.6;
+  }
+  .day-cell.weekend-closed:hover{
+    border-color:var(--line);
+    box-shadow:none;
+  }
+  .day-cell.weekend-closed .day-num{
+    color:var(--ink-faint) !important;
+  }
+  .holiday-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;font-weight:700;
+    color:var(--danger);
+    margin-top:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
   .day-badges{
     display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;
   }
@@ -295,6 +333,25 @@
   }
   .btn-apply:hover{border-color:var(--lamp);color:var(--lamp);border-style:solid;}
 
+  .holiday-manage{
+    display:flex;gap:8px;align-items:center;
+    background:var(--danger-glow);
+    border:1px solid var(--danger);
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:14px;
+  }
+  .holiday-manage input{
+    flex:1;
+    font-family:'Gowun Dodum',sans-serif;
+    border:1.3px solid var(--line);border-radius:7px;
+    padding:7px 10px;font-size:12.5px;background:var(--paper-white);
+  }
+  .holiday-manage input:focus{outline:none;border-color:var(--danger);}
+  .holiday-manage-info{
+    font-size:13px;font-weight:700;color:var(--danger);flex:1;
+  }
+
   /* ---------- Apply form (inline) ---------- */
   .apply-form{
     margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);
@@ -356,11 +413,11 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   .legend{
-    display:flex;gap:16px;justify-content:center;margin-top:20px;
-    font-size:11px;color:var(--ink-soft);flex-wrap:wrap;
+    display:flex;gap:20px;justify-content:center;margin-top:20px;
+    font-size:14px;font-weight:500;color:var(--ink-soft);flex-wrap:wrap;
   }
-  .legend span{display:flex;align-items:center;gap:5px;}
-  .legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
 
   @media (max-width:600px){
     .day-cell{min-height:70px;padding:6px 6px 8px;}
@@ -374,11 +431,12 @@
 <div class="wrap">
   <header>
     <div>
-      <div class="brand-eyebrow">부개여고 · 모란글샘</div>
-      <h1>모란글샘 활용 신청</h1>
+      <div class="brand-eyebrow">부개여고 * 학교도서관</div>
+      <h1>모란글샘 이용 신청</h1>
     </div>
     <div class="header-actions">
       <span class="admin-pill" id="adminPill"><span class="dot"></span>사서 모드</span>
+      <button class="btn-ghost" id="exportBtn" style="display:none;">엑셀로 내보내기</button>
       <button class="btn-ghost" id="loginBtn">사서교사 로그인</button>
     </div>
   </header>
@@ -391,9 +449,9 @@
     <button id="prevMonth">‹</button>
     <div>
       <div class="month-label" id="monthLabel">2026년 7월</div>
-      <div style="text-align:center;margin-top:5px;"><button class="today-link" id="todayBtn">오늘로</button></div>
     </div>
     <button id="nextMonth">›</button>
+    <button class="today-link" id="todayBtn">&lt;오늘로 이동&gt;</button>
   </div>
 
   <div class="weekdays">
@@ -437,6 +495,7 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 /* =========================================================
    설정 (CONFIG) — 이 부분만 본인 환경에 맞게 수정하세요
@@ -461,17 +520,20 @@ const PERIODS = [1,2,3,4,5,6,7];
 
 let db = null;
 let requestsRef = null;
+let holidaysRef = null;
 let firebaseReady = false;
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
   requestsRef = db.ref("classRequests");
+  holidaysRef = db.ref("holidays");
   firebaseReady = true;
 } catch (e) {
   console.warn("Firebase 연결에 실패했어요 (미리보기 환경이거나 설정이 비어있을 수 있어요):", e);
 }
 
 let allRequests = {};      // { pushId: {date, period, teacher, grade, topic, memo, status, createdAt} }
+let holidays = {};         // { "2026-10-05": {label: "개교기념일", createdAt: timestamp} }
 let currentMonth = new Date();
 let selectedDateStr = null;
 let isAdmin = false;
@@ -503,6 +565,13 @@ if (firebaseReady){
   }, (err) => {
     console.warn("Firebase 읽기 오류:", err);
     showToast("Firebase 연결을 확인해주세요.");
+  });
+  holidaysRef.on('value', (snap) => {
+    holidays = snap.val() || {};
+    renderCalendar();
+    if (selectedDateStr) renderDrawerBody(selectedDateStr);
+  }, (err) => {
+    console.warn("Firebase 읽기 오류(휴관일):", err);
   });
 } else {
   showToast("⚠️ Firebase 설정이 필요해요 (미리보기 모드).");
@@ -540,10 +609,15 @@ function renderCalendar(){
   for (let d=1; d<=daysInMonth; d++){
     const dateStr = toDateStr(y,m,d);
     const dow = new Date(y,m,d).getDay();
+    const isWeekend = (dow===0 || dow===6);
+    const holidayInfo = holidays[dateStr];
+    const isHoliday = !!holidayInfo;
+    const isClosed = isWeekend || isHoliday;
     const cell = document.createElement('div');
     cell.className = 'day-cell';
     if (dow===0) cell.classList.add('sun');
     if (dow===6) cell.classList.add('sat');
+    if (isClosed) cell.classList.add('weekend-closed');
     if (dateStr === todayStr()) cell.classList.add('today');
     if (dateStr === selectedDateStr) cell.classList.add('selected');
 
@@ -556,6 +630,13 @@ function renderCalendar(){
     num.textContent = d;
     cell.appendChild(num);
 
+    if (isHoliday){
+      const tag = document.createElement('div');
+      tag.className = 'holiday-tag';
+      tag.textContent = holidayInfo.label ? holidayInfo.label : '휴관';
+      cell.appendChild(tag);
+    }
+
     const badges = document.createElement('div');
     badges.className = 'day-badges';
     const dayReqs = requestsForDate(dateStr).sort((a,b)=>a.period-b.period);
@@ -567,7 +648,14 @@ function renderCalendar(){
     });
     cell.appendChild(badges);
 
-    cell.addEventListener('click', () => openDrawer(dateStr));
+    if (isClosed && !isAdmin){
+      const msg = isHoliday
+        ? `휴관일이에요${holidayInfo.label ? ' (' + holidayInfo.label + ')' : ''}.`
+        : '휴관일(토·일)에는 신청할 수 없어요.';
+      cell.addEventListener('click', () => showToast(msg));
+    } else {
+      cell.addEventListener('click', () => openDrawer(dateStr));
+    }
     cal.appendChild(cell);
   }
 }
@@ -599,6 +687,45 @@ function renderDrawerBody(dateStr){
   const body = $('drawerBody');
   body.innerHTML = '';
   const dayReqs = requestsForDate(dateStr);
+
+  const [hy,hm,hd] = dateStr.split('-').map(Number);
+  const dow = new Date(hy,hm-1,hd).getDay();
+  const isWeekend = (dow===0 || dow===6);
+  const holidayInfo = holidays[dateStr];
+  const isHoliday = !!holidayInfo;
+
+  if (isAdmin && !isWeekend){
+    const holidayBox = document.createElement('div');
+    holidayBox.className = 'holiday-manage';
+    if (isHoliday){
+      holidayBox.innerHTML = `
+        <div class="holiday-manage-info">🚫 휴관일로 지정됨${holidayInfo.label ? ' · ' + escapeHtml(holidayInfo.label) : ''}</div>
+        <button class="btn-cancel" id="unmarkHolidayBtn">휴관일 해제</button>
+      `;
+      holidayBox.querySelector('#unmarkHolidayBtn').addEventListener('click', () => {
+        if (!firebaseReady){ showToast('⚠️ Firebase 설정이 필요해요.'); return; }
+        holidaysRef.child(dateStr).remove().then(()=>showToast('휴관일을 해제했어요.'));
+      });
+    } else {
+      holidayBox.innerHTML = `
+        <input type="text" id="holidayLabelInput" placeholder="휴관 사유 (예: 개교기념일, 방학식)">
+        <button class="btn-cancel" id="markHolidayBtn" style="white-space:nowrap;">+ 휴관일 지정</button>
+      `;
+      holidayBox.querySelector('#markHolidayBtn').addEventListener('click', () => {
+        if (!firebaseReady){ showToast('⚠️ Firebase 설정이 필요해요.'); return; }
+        const label = holidayBox.querySelector('#holidayLabelInput').value.trim();
+        holidaysRef.child(dateStr).set({ label, createdAt: Date.now() })
+          .then(()=>showToast('휴관일로 지정했어요.'));
+      });
+    }
+    body.appendChild(holidayBox);
+  } else if (isHoliday){
+    const notice = document.createElement('div');
+    notice.className = 'holiday-manage-info';
+    notice.style.marginBottom = '12px';
+    notice.textContent = `🚫 휴관일이에요${holidayInfo.label ? ' · ' + holidayInfo.label : ''}`;
+    body.appendChild(notice);
+  }
 
   PERIODS.forEach(p => {
     const existing = dayReqs.find(r => r.period === p);
@@ -635,11 +762,18 @@ function renderDrawerBody(dateStr){
           <span style="font-size:12px;color:var(--ink-faint);">비어 있음</span>
         </div>
       `;
-      const applyBtn = document.createElement('button');
-      applyBtn.className = 'btn-apply';
-      applyBtn.textContent = '+ 이 교시에 신청하기';
-      applyBtn.addEventListener('click', () => toggleApplyForm(row, dateStr, p, applyBtn));
-      row.appendChild(applyBtn);
+      if (isWeekend || isHoliday){
+        const closedNote = document.createElement('div');
+        closedNote.style.cssText = 'margin-top:8px;font-size:12px;color:var(--ink-faint);';
+        closedNote.textContent = '휴관일이라 신청할 수 없어요.';
+        row.appendChild(closedNote);
+      } else {
+        const applyBtn = document.createElement('button');
+        applyBtn.className = 'btn-apply';
+        applyBtn.textContent = '+ 이 교시에 신청하기';
+        applyBtn.addEventListener('click', () => toggleApplyForm(row, dateStr, p, applyBtn));
+        row.appendChild(applyBtn);
+      }
     }
     body.appendChild(row);
   });
@@ -733,6 +867,7 @@ $('loginBtn').addEventListener('click', () => {
     isAdmin = false;
     $('adminPill').classList.remove('on');
     $('loginBtn').textContent = '사서교사 로그인';
+    $('exportBtn').style.display = 'none';
     updatePendingStrip();
     if (selectedDateStr) renderDrawerBody(selectedDateStr);
     showToast('사서 모드를 종료했어요.');
@@ -751,6 +886,7 @@ function tryLogin(){
     isAdmin = true;
     $('adminPill').classList.add('on');
     $('loginBtn').textContent = '로그아웃';
+    $('exportBtn').style.display = 'inline-block';
     $('loginModal').classList.remove('show');
     updatePendingStrip();
     if (selectedDateStr) renderDrawerBody(selectedDateStr);
@@ -759,6 +895,38 @@ function tryLogin(){
     showToast('비밀번호가 올바르지 않아요.');
   }
 }
+
+/* ---------- Excel export ---------- */
+$('exportBtn').addEventListener('click', () => {
+  const list = Object.values(allRequests);
+  if (list.length === 0){
+    showToast('내보낼 신청 데이터가 없어요.');
+    return;
+  }
+  const statusLabel = { pending: '승인 대기', approved: '예약 확정' };
+  const rows = list
+    .sort((a,b) => (a.date+String(a.period).padStart(2,'0')).localeCompare(b.date+String(b.period).padStart(2,'0')))
+    .map(r => ({
+      '날짜': r.date,
+      '교시': r.period,
+      '상태': statusLabel[r.status] || r.status,
+      '교사명': r.teacher || '',
+      '학년/반': r.grade || '',
+      '수업 주제': r.topic || '',
+      '메모': r.memo || ''
+    }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [
+    {wch:12},{wch:6},{wch:10},{wch:10},{wch:12},{wch:26},{wch:30}
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '이용신청현황');
+
+  const today = todayStr().replaceAll('-','');
+  XLSX.writeFile(wb, `모란글샘_이용신청현황_${today}.xlsx`);
+  showToast('엑셀 파일을 다운로드했어요.');
+});
 
 /* ---------- Init ---------- */
 renderCalendar();
