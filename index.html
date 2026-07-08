@@ -41,7 +41,7 @@
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
-  .app-wrapper{max-width:1120px;margin:0 auto;padding:32px 24px 80px;}
+  .app-wrapper{max-width:1040px;margin:0 auto;padding:32px 24px 80px;}
 
   .site-header{
     display:flex;justify-content:space-between;align-items:center;
@@ -83,18 +83,6 @@
     color:#fff;padding:8px 18px;box-shadow:var(--shadow-sm);
   }
   .btn-primary:hover{background:var(--accent-light);}
-
-  .app-body{display:flex;gap:18px;align-items:flex-start;}
-  .panel-left{flex:1.3;min-width:0;}
-  .panel-right{
-    flex:1;min-width:300px;position:sticky;top:24px;
-    background:var(--card-bg);border:1px solid var(--border);
-    border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
-  }
-  @media(max-width:860px){
-    .app-body{flex-direction:column;}
-    .panel-right{position:static;width:100%;}
-  }
 
   .month-nav{
     display:flex;align-items:center;justify-content:center;gap:20px;
@@ -153,8 +141,25 @@
   .badge-dot.pending{background:var(--orange);}
   .badge-dot.approved{background:var(--teal);}
 
-  .panel-date{font-family:'Gowun Batang',serif;font-weight:700;font-size:17px;margin-bottom:14px;}
-  .panel-date .yr{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-faint);font-weight:500;margin-bottom:2px;}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.08);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;}
+  .overlay.show{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,94vw);
+    background:#fff;box-shadow:var(--shadow-lg);
+    transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+    z-index:50;display:flex;flex-direction:column;
+    border-left:1px solid var(--border);
+  }
+  .drawer.show{transform:translateX(0);}
+  .drawer-head{
+    padding:24px 24px 18px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:flex-start;
+  }
+  .drawer-date{font-family:'Gowun Batang',serif;font-weight:700;font-size:17px;}
+  .drawer-date .yr{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-faint);font-weight:500;margin-bottom:2px;}
+  .drawer-close{background:var(--accent-glow);border:none;font-size:16px;color:var(--ink-faint);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .drawer-close:hover{background:var(--border);color:var(--ink);}
+  .drawer-body{flex:1;overflow-y:auto;padding:18px 24px 24px;}
 
   .period-row{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;background:#fff;transition:all .15s;}
   .period-row.booked.pending{border-color:var(--orange);background:var(--orange-glow);}
@@ -207,8 +212,6 @@
   .legend span{display:flex;align-items:center;gap:6px;}
   .legend i{width:10px;height:10px;border-radius:5px;display:inline-block;}
 
-  .panel-empty-hint{font-size:12px;color:var(--ink-faint);text-align:center;padding:20px 0;}
-
   @media(max-width:600px){
     .app-wrapper{padding:20px 14px 60px;}
     .day-cell{min-height:68px;padding:6px 5px 8px;}
@@ -234,24 +237,23 @@
    <div class="pending-strip" id="pendingStrip">
     <span>⏳ 승인 대기 중인 신청이</span><b id="pendingCount">0</b><span>건 있어요</span>
    </div>
-   <div class="app-body">
-    <div class="panel-left">
-     <div class="month-nav"><button class="month-nav-btn" id="prevMonth">‹</button>
-      <div class="month-label" id="monthLabel"></div><button class="month-nav-btn" id="nextMonth">›</button> <button class="today-link" id="todayBtn">오늘</button>
-     </div>
-     <div class="weekdays"><span>일</span> <span>월</span> <span>화</span> <span>수</span> <span>목</span> <span>금</span> <span>토</span>
-     </div>
-     <div class="calendar" id="calendar"></div>
-     <div class="legend"><span><i style="background:var(--orange)"></i><span>승인 대기</span></span> <span><i style="background:var(--teal)"></i><span>승인 완료</span></span>
-     </div>
-    </div>
-    <div class="panel-right" id="rightPanel">
-     <div class="panel-date">
-      <span class="yr" id="drawerYear">2026년</span><span id="drawerDate">날짜를 선택해주세요</span>
-     </div>
-     <div id="drawerBody"><div class="panel-empty-hint">달력에서 날짜를 클릭하면<br>이곳에 신청 현황이 표시돼요.</div></div>
-    </div>
+   <div class="month-nav"><button class="month-nav-btn" id="prevMonth">‹</button>
+    <div class="month-label" id="monthLabel"></div><button class="month-nav-btn" id="nextMonth">›</button> <button class="today-link" id="todayBtn">오늘</button>
    </div>
+   <div class="weekdays"><span>일</span> <span>월</span> <span>화</span> <span>수</span> <span>목</span> <span>금</span> <span>토</span>
+   </div>
+   <div class="calendar" id="calendar"></div>
+   <div class="legend"><span><i style="background:var(--orange)"></i><span>승인 대기</span></span> <span><i style="background:var(--teal)"></i><span>승인 완료</span></span>
+   </div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+  <div class="drawer" id="drawer">
+   <div class="drawer-head">
+    <div class="drawer-date">
+     <span class="yr" id="drawerYear">2026</span><span id="drawerDate">7월 10일 (금)</span>
+    </div><button class="drawer-close" id="drawerClose">✕</button>
+   </div>
+   <div class="drawer-body" id="drawerBody"></div>
   </div>
   <div class="modal-overlay" id="loginModal">
    <div class="modal">
@@ -342,18 +344,20 @@ function renderCalendar(){
     requestsForDate(dateStr).sort((a,b)=>a.period-b.period).forEach(r=>{const b=document.createElement('div');b.className='badge-dot '+(r.status==='approved'?'approved':'pending');b.textContent=r.period;badges.appendChild(b);});
     cell.appendChild(badges);
     if(isClosed&&!isAdmin){cell.addEventListener('click',()=>showToast(isHoliday?'휴관일이에요.':'주말에는 신청할 수 없어요.'));}
-    else{cell.addEventListener('click',()=>selectDate(dateStr));}
+    else{cell.addEventListener('click',()=>openDrawer(dateStr));}
     cal.appendChild(cell);
   }
 }
 
-function selectDate(dateStr){
+function openDrawer(dateStr){
   selectedDateStr=dateStr;renderCalendar();
   const[y,m,d]=dateStr.split('-').map(Number);
   const dow=['일','월','화','수','목','금','토'][new Date(y,m-1,d).getDay()];
   $('drawerYear').textContent=`${y}년`;$('drawerDate').textContent=`${m}월 ${d}일 (${dow})`;
-  renderDrawerBody(dateStr);
+  renderDrawerBody(dateStr);$('overlay').classList.add('show');$('drawer').classList.add('show');
 }
+function closeDrawer(){$('overlay').classList.remove('show');$('drawer').classList.remove('show');selectedDateStr=null;renderCalendar();}
+$('drawerClose').addEventListener('click',closeDrawer);$('overlay').addEventListener('click',closeDrawer);
 
 function renderDrawerBody(dateStr){
   const body=$('drawerBody');body.innerHTML='';
@@ -398,11 +402,11 @@ function toggleApplyForm(row,dateStr,period,applyBtn){
   applyBtn.style.display='none';
   const[fy,fm,fd]=dateStr.split('-').map(Number);const fdow=['일','월','화','수','목','금','토'][new Date(fy,fm-1,fd).getDay()];
   const form=document.createElement('div');form.className='apply-form';
-  form.innerHTML=`<div class="form-date">📅 ${fy}.${fm}.${fd} (${fdow}) · ${period}교시</div><div class="form-row"><input type="text" placeholder="교사 이름" id="f_teacher"><input type="text" placeholder="학년/반" id="f_grade"></div><input type="text" placeholder="과목명 (선택)" id="f_topic"><textarea placeholder="메모 (선택)" id="f_memo"></textarea><button class="btn-submit" id="f_submit">신청 제출</button><div class="form-hint" style="color:var(--danger);">제출 후 사서교사의 승인을 기다려주세요.</div>`;
+  form.innerHTML=`<div class="form-date">📅 ${fy}.${fm}.${fd} (${fdow}) · ${period}교시</div><div class="form-row"><input type="text" placeholder="신청 교사" id="f_teacher"><input type="text" placeholder="학년/반 또는 모임명" id="f_grade"></div><input type="text" placeholder="과목명 (선택)" id="f_topic"><textarea placeholder="메모 (선택)" id="f_memo"></textarea><button class="btn-submit" id="f_submit">신청 제출</button><div class="form-hint" style="color:var(--danger);">제출 후 사서교사의 승인을 기다려주세요.</div>`;
   row.appendChild(form);
   form.querySelector('#f_submit').addEventListener('click',()=>{
     const teacher=form.querySelector('#f_teacher').value.trim(),grade=form.querySelector('#f_grade').value.trim(),topic=form.querySelector('#f_topic').value.trim(),memo=form.querySelector('#f_memo').value.trim();
-    if(!teacher){showToast('교사 이름을 입력해주세요.');return;}
+    if(!teacher){showToast('신청 교사를 입력해주세요.');return;}
     if(!firebaseReady){showToast('⚠️ Firebase 설정 필요');return;}
     requestsRef.push({date:dateStr,period,teacher,grade,topic,memo,status:'pending',createdAt:Date.now()}).then(()=>showToast('신청 완료'));
   });
@@ -413,7 +417,7 @@ function escapeHtml(s){const d=document.createElement('div');d.textContent=s;ret
 $('prevMonth').addEventListener('click',()=>{currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()-1,1);renderCalendar();});
 $('nextMonth').addEventListener('click',()=>{currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+1,1);renderCalendar();});
 $('todayBtn').addEventListener('click',()=>{currentMonth=new Date();renderCalendar();});
-$('pendingStrip').addEventListener('click',()=>{const f=Object.values(allRequests).find(r=>r.status==='pending');if(f)selectDate(f.date);});
+$('pendingStrip').addEventListener('click',()=>{const f=Object.values(allRequests).find(r=>r.status==='pending');if(f)openDrawer(f.date);});
 
 $('loginBtn').addEventListener('click',()=>{$('loginModal').classList.add('show');$('pwInput').value='';$('pwInput').focus();});
 $('loginBtn-logout').addEventListener('click',()=>{isAdmin=false;$('adminPill').classList.remove('on');$('loginBtn').style.display='';$('loginBtn-logout').style.display='none';$('exportBtn').style.display='none';updatePendingStrip();if(selectedDateStr)renderDrawerBody(selectedDateStr);showToast('로그아웃');});
@@ -428,12 +432,11 @@ function tryLogin(){
 
 $('exportBtn').addEventListener('click',()=>{
   const list=Object.values(allRequests);if(!list.length){showToast('데이터 없음');return;}
-  const rows=list.sort((a,b)=>(a.date+String(a.period).padStart(2,'0')).localeCompare(b.date+String(b.period).padStart(2,'0'))).map(r=>({'날짜':r.date,'교시':r.period,'상태':r.status==='approved'?'확정':'대기','교사명':r.teacher||'','학년/반':r.grade||'','주제':r.topic||'','메모':r.memo||''}));
+  const rows=list.sort((a,b)=>(a.date+String(a.period).padStart(2,'0')).localeCompare(b.date+String(b.period).padStart(2,'0'))).map(r=>({'날짜':r.date,'교시':r.period,'상태':r.status==='approved'?'확정':'대기','신청 교사':r.teacher||'','학년/반 또는 모임명':r.grade||'','주제':r.topic||'','메모':r.memo||''}));
   const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'신청현황');XLSX.writeFile(wb,'모란글샘 이용신청.xlsx');showToast('다운로드 완료');
 });
 
 renderCalendar();
-selectDate(todayStr());
 lucide.createIcons();
   </script>
  </body>
